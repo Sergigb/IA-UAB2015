@@ -77,18 +77,12 @@ coord_origin, coord_destination   <---- coordenades
         
         if(closestStationOrigin != None):
             distance_ = math.sqrt( (coord_origin[0] - station.x)**2 + (coord_origin[1] - station.y)**2 )
-            print "distance: %d", distance
-            print "distance_: &d", distance_
-            
             if(distance_ < distance):
                 closestStationOrigin = station
                 distance = distance_
         else:
-            print "one time"
             closestStationOrigin = station
             distance = math.sqrt( (coord_destination[0] - station.x)**2 + (coord_destination[1] - station.y)**2 )
-
-
 
     closestStationDestination = None
         
@@ -102,15 +96,15 @@ coord_origin, coord_destination   <---- coordenades
         else:
             closestStationDestination = station
             distance = math.sqrt( (coord_destination[0] - station.x)**2 + (coord_destination[1] - station.y)**2 )
-            
-
-
-
-
         
     print("L'estacio mes proxima al origen es ", closestStationOrigin.name)
     print("L'estacio mes proxima al desti es ", closestStationDestination.name)
     
+
+
+
+
+
 
 
 
