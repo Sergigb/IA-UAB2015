@@ -56,17 +56,18 @@ def FindClosest(coords,stationList):
 def DistanceHeuristic(source,destination):
     return math.hypot((destination.x - source.x),(destination.y - source.y))  #Distancia euclidea entre node i destí final
     
-def TimeHeuristic(source,target,destination,timeStations,timeTransfers): #PROVISIONAL
-    time = timeStations[source.id][target.id]
-    if source.line != target.line:
-        time = time + timeTransfers[source.id][target.id]
-    return time
+##def TimeHeuristic(source,target,destination,timeStations,timeTransfers): #No em convenç, aquest codi seria el de la funcio de cost
+##    time = timeStations[source.id][target.id]
+##    if source.line != target.line:
+##        time = time + timeTransfers[source.id][target.id]
+##    return time
 
 def TransferHeuristic(source,destination): #Si no estem a la mateixa línea, haurem de fer com a mínim un transbord
     if source.line != destination.line:
         return 1
     else:
         return 0
+
 
 def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, typePreference, timeTransfers,
                    timeStations):
@@ -153,9 +154,22 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
             nextStation = stationList[node-1]                               #Assignem a nextStation i currentStation les estacions corresponents (de la llista stationList) al node que estem 
             currentStation = stationList[currentNode[0]-1]                  #expandint i el node actual, així podrem obtenir les distàncies entre l'un i l'altre
+
+            if typePreference == 0:
+                partialCost = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
+                h = DistanceHeuristic(currentStation,closestStationDestination)
+                partialCost = partialCost + h
+            elif typePreference == 1:
+                raise NotImplementedError
+            elif typePreference == 2:
+                partialCost = timeStations[currentStation.id][nextStation.id]
+                if currentStation.line != nextStation.line:
+                    partialCost = partialCost + timeTransfers[currentStation.id][nextStation.id]
+                #h = ?
+            else:
+                partialCost = TransferHeuristic(currentStation,nextStation)
             
-            partialCost = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
-            #print partialCost
+            
             cost = partialCost + currentNode[1]                             #Creem una nova tupla amb el cost i la ID del node adjacent que estem expandint
             ID = node
             tempNode = (ID, cost)
