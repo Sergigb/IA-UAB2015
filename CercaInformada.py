@@ -57,7 +57,8 @@ def DistanceHeuristic(source,destination):
     return math.hypot((destination.x - source.x),(destination.y - source.y))  #Distancia euclidea entre node i destí final
     
 def TimeHeuristic(source,destination,estimatedSpeed): 
-    time = DistanceHeuristic(source,destination)*estimatedSpeed
+    time = DistanceHeuristic(source,destination)/estimatedSpeed
+    return time
 
 def TransferHeuristic(source,destination): #Si no estem a la mateixa línea, haurem de fer com a mínim un transbord
     if source.line != destination.line:
