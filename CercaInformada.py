@@ -166,8 +166,10 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                     partialCost = partialCost + timeTransfers[currentStation.id][nextStation.id]
                 h = TimeHeuristic(currentStation,nextStation,estimatedSpeed)
                 partialCost = partialCost + h
-            else:
+            elif typePreference == 3:
                 partialCost = TransferHeuristic(currentStation,nextStation)
+            else:
+                raise AttributeError
             
             
             cost = partialCost + currentNode[1]                             #Creem una nova tupla amb el cost i la ID del node adjacent que estem expandint
@@ -194,8 +196,6 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                         
 
 ############################################################################################
-
-    
 
 
 #if __name__ == "__main__":
