@@ -42,7 +42,7 @@ def FindClosest(coords,stationList):
     closestStation = None
 
     for station in stationList:                                  #Busquem l'estació que estigui més aprop de les coordenades de sortida dins de la llista d'estacions
-        if(closestStationOrigin != None):
+        if(closestStation != None):
             distance_ = math.hypot((coords[0] - station.x),(coords[1] - station.y))
             if(distance_ < distance):                            #Si distància a l'estació actual  és mes petita que l'anterior, substituim l'estació
                 closestStation = station
@@ -137,16 +137,16 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
                 nextStation = stationList[node-1]                               #Assignem a nextStation i currentStation les estacions corresponents (de la llista stationList) al node que estem 
                 currentStation = stationList[currentNode[0]-1]                  #expandint i el node actual, així podrem obtenir les distàncies entre l'un i l'altre
-
-                partialCost = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
                 
+                partialCost = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
+                print partialCost
                 cost = partialCost + currentNode[1]                             #Creem una nova tupla amb el cost i la ID del node adjacent que estem expandint
                 ID = node
                 tempNode = (ID, cost)
                 tempPath = list(path)                                           #Copiem el camí actual (el path) i inserim la tupla amb la ID i el cost 
                 tempPath.insert(0, tempNode)
                 
-                n = RemoveCycles(tempPath)                                      #Aquesta funció buscará si el node que hem expandit ja l'habíem visitat anteriorment en aquest camí. Si es la primera
+                n = RemoveCycles(tempPath)                                      #Aquesta funció buscará si el node que hem expandit ja l'havíem visitat anteriorment en aquest camí. Si es la primera
                                                                                 #vegada que el visitem, l'afegim a la llista de camins (List)
                 if n:
                     pos = 0
@@ -181,21 +181,3 @@ def test(coord_origin, coord_destination, typePreference):    #coord_origin i co
     timeTransfers = readCostTable("TempsTransbordaments.txt") #Matriu de costos de transbord
     AstarAlgorithm(stationList, matAdjacencia, coord_origin, coord_destination, typePreference, timeTransfers, timeStations)
     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
