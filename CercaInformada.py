@@ -159,14 +159,13 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
             tempNode = (ID, cost)
             tempPath = list(path)                                           #Copiem el camí actual (el path) i inserim la tupla amb la ID i el cost 
             tempPath.insert(0, tempNode)
-            
-            n = RemoveCycles(tempPath)                                      #Aquesta funció buscará si el node que hem expandit ja l'havíem visitat anteriorment en aquest camí. Si es la primera
-                                                                            #vegada que el visitem, l'afegim a la llista de camins (List)
-            if n:
-                pos = 0
-                for listPath in List:                                       #Inserim de forma ordenada el nou camí en la llista, d'aquesta forma la llista queda ordenada de menor cost a major
+                                    
+                                                                            
+            if RemoveCycles(tempPath) :                                     #Aquesta funció buscará si el node que hem expandit ja l'havíem visitat anteriorment en aquest camí. Si es la primera
+                pos = 0                                                     #vegada que el visitem, l'afegim a la llista de camins (List)
+                for listPath in List:                                               
                     firstNode = listPath[0]
-                    if firstNode[1] < cost:
+                    if firstNode[1] < cost:                                 #Inserim de forma ordenada el nou camí en la llista, d'aquesta forma la llista queda ordenada de menor cost a major
                         pos = pos + 1
             
                 List.insert(pos, tempPath)
