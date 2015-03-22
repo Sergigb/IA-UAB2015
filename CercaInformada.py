@@ -19,9 +19,20 @@ import math
 
 
 
+ 
 
 def RemoveCycles(childrenList):
-    pass
+    nodes = []
+    
+    for node in childrenList:
+        if not node[0] in nodes:
+            nodes.append(node[0])
+        else:
+            return False
+        
+    return True
+
+
 
 def RemoveRedundantPaths(childrenList, nodeList, partialCostTable):
     pass
@@ -73,27 +84,28 @@ coord_origin, coord_destination   <---- coordenades
     #Busquem l'estació més propera al orígen
     closestStationOrigin = None
 
-    for station in stationList:
+    for station in stationList:                                  #Busquem l'estació que estigui més aprop de les coordenades de sortida dins de la llista d'estacions
         
         if(closestStationOrigin != None):
             distance_ = math.sqrt( (coord_origin[0] - station.x)**2 + (coord_origin[1] - station.y)**2 )
-            if(distance_ < distance):
+            if(distance_ < distance):                            #Si distància a l'estació actual  és mes petita que l'anterior, substituim l'estació
                 closestStationOrigin = station
                 distance = distance_
-        else:
+        else:                                                    #Quan es fa la primera iteració s'assigna la primera estació de la llista com la més pròxima
             closestStationOrigin = station
             distance = math.sqrt( (coord_destination[0] - station.x)**2 + (coord_destination[1] - station.y)**2 )
 
+    #Busquem l'estació més propera al destí
     closestStationDestination = None
         
-    for station in stationList:
+    for station in stationList:                                 #Busquem l'estació que estigui més aprop de les coordenades d'arribada dins de la llista d'estacions
         
         if(closestStationDestination != None):
             distance_ = math.sqrt( (coord_destination[0] - station.x)**2 + (coord_destination[1] - station.y)**2 )
-            if(distance_ < distance):
+            if(distance_ < distance):                           #Si distància a l'estació actual  és mes petita que l'anterior, substituim l'estació
                 closestStationDestination = station
                 distance = distance_
-        else:
+        else:                                                   #Quan es fa la primera iteració s'assigna la primera estació de la llista com la més pròxima
             closestStationDestination = station
             distance = math.sqrt( (coord_destination[0] - station.x)**2 + (coord_destination[1] - station.y)**2 )
         
@@ -102,13 +114,76 @@ coord_origin, coord_destination   <---- coordenades
     
 
 
+############################################################################################
+
+    ##                               ________________path_________________
+    ##                              /                                     \
+    #####Estructura de las listas: [[(ID, coste), (ID, coste), (ID, coste)], [(ID, coste), (ID,coste)]]
+    ##                               \_________/
+    ##                               currentNode
+
+
+    ##
+    ##   destinationDic: {ID:coste, ID:coste,...}
+    ##                   \_______/
+    ##                     node
+
+#############################################################################################
+
+
+    if typePreference == 0:                          #minimum distance
+        setNextStations(stationList, connections)    #la matriu de costos és simplement una matriu d'adjacència
+
+        List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
+        currentNode = (None, None)
+
+
+        while List and currentNode[0] != closestStationDestination.id:          #Mentres la llista no estigui biuda o el primer node del primer camí(path) no sigui el destí, seguim expandint
+            
+            path = List.pop(0)                                                  ##### "path" es la llista on estan les tuples amb les IDs i els costos
+            currentNode = path[0]                                               ### ID del node on estem ara
+            destinationDic = stationList[currentNode[0]-1].destinationDic       #copiem el diccionari de nodes adjacents al node actual (ID y cost) (es troba a la llista d'estacions)
+
+            for node in destinationDic:                                         #Explorem tots els nodes adjacents que es troben en el diccionari
+
+                nextStation = stationList[node-1]                               #Assignem a nextStation i currentStation les estacions corresponents (de la llista stationList) al node que estem 
+                currentStation = stationList[currentNode[0]-1]                  #expandint i el node actual, així podrem obtenir les distàncies entre l'un i l'altre
+
+                partialCost = math.sqrt( (nextStation.x - currentStation.x)**2 + (nextStation.y - currentStation.y)**2 )
+                
+                cost = partialCost + currentNode[1]                             #Creem una nova tupla amb el cost i la ID del node adjacent que estem expandint
+                ID = node
+                tempNode = (ID, cost)
+                tempPath = list(path)                                           #Copiem el camí actual (el path) i inserim la tupla amb la ID i el cost 
+                tempPath.insert(0, tempNode)
+                
+                n = RemoveCycles(tempPath)                                      #Aquesta funció buscará si el node que hem expandit ja l'habíem visitat anteriorment en aquest camí. Si es la primera
+                                                                                #vegada que el visitem, l'afegim a la llista de camins (List)
+                if n:
+                    pos = 0
+                    for listPath in List:                                       #Inserim de forma ordenada el nou camí en la llista, d'aquesta forma la llista queda ordenada de menor cost a major
+                        firstNode = listPath[0]
+                        if firstNode[1] < cost:
+                            pos = pos + 1
+                
+                    List.insert(pos, tempPath)
+                
+
+            #print List
+            if currentNode[0] == closestStationDestination.id:                  #Si el primer node del primer camí és el destí, l'imprimim (i després la funció acabará)
+                print "HEAD PATH", path
+                        
+                
+                
+                
+
+            
 
 
 
 
 
-
-
+############################################################################################
 
     
 
