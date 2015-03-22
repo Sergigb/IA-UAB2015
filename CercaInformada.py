@@ -140,7 +140,7 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
     if typePreference == 2:
         setNextStations(stationList, timeStations)    #matriu de costos en temps
     else:
-        setnextStations (stationList, connections)    #la resta de casos usen la matriu d'adjacència
+        setNextStations (stationList, connections)    #la resta de casos usen la matriu d'adjacència
 
     List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
     currentNode = (None, None)
@@ -206,7 +206,36 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
         #print List
         if currentNode[0] == closestStationDestination.id:                  #Si el primer node del primer camí és el destí, l'imprimim (i després la funció acabará)
+
+            i = 0
+
+            for item in path:                                               #Elimina les estacions del principi de la ruta que estiguin repetides
+                nextItem = path[i+1]
+                station = stationList[item[0]-1]
+                station_ = stationList[nextItem[0]-1]
+                if station.name == station_.name:
+                    path.pop(i)
+                else:
+                    break
+                i+=1
+
+            i = len(path) - 1                                               #Elimina les estacions del final de la ruta que estiguin repetides
+            for item in reversed(path):
+                nextItem = path[i-1]
+                station = stationList[item[0]-1]
+                station_ = stationList[nextItem[0]-1]
+                if station.name == station_.name:
+                    path.pop(i)
+                else:
+                    break
+                i-=1
+
             print "HEAD PATH", path
+            for node in path:
+                station = stationList[node[0]-1]
+                print station.name
+
+            
                         
 
 ############################################################################################
