@@ -71,8 +71,7 @@ def TransferHeuristic(source,destination): #Si no estem a la mateixa línea, haur
         return 0
 
 
-def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, typePreference, timeTransfers,
-                   timeStations):
+def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, typePreference, timeTransfers, timeStations):
     """
      AstarAlgorithm: main function. It is the connection between the GUI and the AStar search code.
      INPUTS:
