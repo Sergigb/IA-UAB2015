@@ -207,7 +207,7 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
         #print List
         if currentNode[0] == closestStationDestination.id:                  #Si el primer node del primer camí és el destí, l'imprimim (i després la funció acabará)
 
-            if len(path) > 2:
+            if len(path) > 2: 
                 i = 0
                 for item in path:                                               #Elimina les estacions del principi de la ruta que estiguin repetides
                     nextItem = path[i+1]
