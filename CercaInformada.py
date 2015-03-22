@@ -60,6 +60,10 @@ def TimeHeuristic(source,destination,estimatedSpeed):
     time = DistanceHeuristic(source,destination)/estimatedSpeed
     return time
 
+def StationHeuristic(source,destination,maxDist):
+    numStations = math.hypot((destination.x - source.x),(destination.y - source.y))//maxDist
+    return int(numStations)
+
 def TransferHeuristic(source,destination): #Si no estem a la mateixa línea, haurem de fer com a mínim un transbord
     if source.line != destination.line:
         return 1
@@ -141,6 +145,7 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
     List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
     currentNode = (None, None)
+    maxDist = 0
 
     while List and currentNode[0] != closestStationDestination.id:          #Mentres la llista no estigui buida o el primer node del primer camí(path) no sigui el destí, seguim expandint
         
@@ -157,17 +162,27 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                 partialCost = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
                 h = DistanceHeuristic(currentStation,closestStationDestination)
                 partialCost = partialCost + h
+                
             elif typePreference == 1:
-                raise NotImplementedError
+                dist = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
+                if  dist > maxDist:
+                    maxDist = dist
+                h = StationHeuristic(currentStation,closestStationDestination,maxDist)
+                partialCost = 1 + h
+                
             elif typePreference == 2:
                 partialCost = timeStations[currentStation.id][nextStation.id]
                 estimatedSpeed = (math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y)))/partialCost #V=x/t assumim que la velocitat serà constant
+
                 if currentStation.line != nextStation.line:
                     partialCost = partialCost + timeTransfers[currentStation.id][nextStation.id]
+                    
                 h = TimeHeuristic(currentStation,nextStation,estimatedSpeed)
                 partialCost = partialCost + h
+                
             elif typePreference == 3:
                 partialCost = TransferHeuristic(currentStation,nextStation)
+                
             else:
                 raise AttributeError
             
