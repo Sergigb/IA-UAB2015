@@ -112,10 +112,10 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
         
 
     #Busquem l'estació més propera al orígen
-    closestStationOrigin = findClosest(coord_origin,stationList)
+    closestStationOrigin = FindClosest(coord_origin,stationList)
 
     #Busquem l'estació més propera al destí
-    closestStationDestination = findClosest(coord_destination,stationList)
+    closestStationDestination = FindClosest(coord_destination,stationList)
         
     print("L'estacio mes proxima al origen es ", closestStationOrigin.name)
     print("L'estacio mes proxima al desti es ", closestStationDestination.name)
