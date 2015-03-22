@@ -135,8 +135,10 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
     print("L'estacio mes proxima al desti es ", closestStationDestination.name)
     
 
-    #if typePreference == 0:                         #minimum distance
-    setNextStations(stationList, connections)    #la matriu de costos és simplement una matriu d'adjacència
+    if typePreference == 2:
+        setNextStations(stationList, timeStations)    #matriu de costos en temps
+    else:
+        setnextStations (stationList, connections)    #la resta de casos usen la matriu d'adjacència
 
     List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
     currentNode = (None, None)
@@ -159,13 +161,14 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
             tempNode = (ID, cost)
             tempPath = list(path)                                           #Copiem el camí actual (el path) i inserim la tupla amb la ID i el cost 
             tempPath.insert(0, tempNode)
-                                    
-                                                                            
-            if RemoveCycles(tempPath) :                                     #Aquesta funció buscará si el node que hem expandit ja l'havíem visitat anteriorment en aquest camí. Si es la primera
-                pos = 0                                                     #vegada que el visitem, l'afegim a la llista de camins (List)
-                for listPath in List:                                               
+            
+            n = RemoveCycles(tempPath)                                      #Aquesta funció buscará si el node que hem expandit ja l'havíem visitat anteriorment en aquest camí. Si es la primera
+                                                                            #vegada que el visitem, l'afegim a la llista de camins (List)
+            if n:
+                pos = 0
+                for listPath in List:                                       #Inserim de forma ordenada el nou camí en la llista, d'aquesta forma la llista queda ordenada de menor cost a major
                     firstNode = listPath[0]
-                    if firstNode[1] < cost:                                 #Inserim de forma ordenada el nou camí en la llista, d'aquesta forma la llista queda ordenada de menor cost a major
+                    if firstNode[1] < cost:
                         pos = pos + 1
             
                 List.insert(pos, tempPath)
