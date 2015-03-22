@@ -56,11 +56,8 @@ def FindClosest(coords,stationList):
 def DistanceHeuristic(source,destination):
     return math.hypot((destination.x - source.x),(destination.y - source.y))  #Distancia euclidea entre node i destí final
     
-##def TimeHeuristic(source,target,destination,timeStations,timeTransfers): #No em convenç, aquest codi seria el de la funcio de cost
-##    time = timeStations[source.id][target.id]
-##    if source.line != target.line:
-##        time = time + timeTransfers[source.id][target.id]
-##    return time
+def TimeHeuristic(source,destination,estimatedSpeed): 
+    time = DistanceHeuristic(source,destination)*estimatedSpeed
 
 def TransferHeuristic(source,destination): #Si no estem a la mateixa línea, haurem de fer com a mínim un transbord
     if source.line != destination.line:
@@ -163,9 +160,11 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                 raise NotImplementedError
             elif typePreference == 2:
                 partialCost = timeStations[currentStation.id][nextStation.id]
+                estimatedSpeed = (math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y)))/partialCost #V=x/t assumim que la velocitat serà constant
                 if currentStation.line != nextStation.line:
                     partialCost = partialCost + timeTransfers[currentStation.id][nextStation.id]
-                #h = ?
+                h = TimeHeuristic(currentStation,nextStation,estimatedSpeed)
+                partialCost = partialCost + h
             else:
                 partialCost = TransferHeuristic(currentStation,nextStation)
             
