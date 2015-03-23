@@ -139,10 +139,10 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
     print("L'estacio mes proxima al desti es ", closestStationDestination.name)
 
 
-    if typePreference == 2:
-        setNextStations(stationList, timeStations)    #matriu de costos en temps
-    else:
-        setNextStations (stationList, connections)    #la resta de casos usen la matriu d'adjacència
+##    if typePreference == 2:
+    setNextStations(stationList, timeStations)    #matriu de costos en temps
+##    else:
+##        setNextStations (stationList, connections)    #la resta de casos usen la matriu d'adjacència
 
     List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
     currentNode = (None, None)
@@ -264,16 +264,16 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                         partialTime = partialTime + timeTransfers[prev.id][station.id]
                         transfers = transfers + 1
                 prev = station
-
+            print time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination
             
-            return time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination
+            return (time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination)
             
                         
 
 ############################################################################################
 
-##if __name__ == "__main__":
-##    main()
+if __name__ == "__main__":
+    main()
 
 
 
@@ -283,4 +283,5 @@ def test(coord_origin, coord_destination, typePreference):    #coord_origin i co
     matAdjacencia = readCostTable("Connections.txt")          #Matriu d'adjacència de les estacions 
     timeStations = readCostTable("TempsEstacions.txt")        #Matriu de costos entre estacions
     timeTransfers = readCostTable("TempsTransbordaments.txt") #Matriu de costos de transbord
-    AstarAlgorithm(stationList, matAdjacencia, coord_origin, coord_destination, typePreference, timeTransfers, timeStations)
+    t = AstarAlgorithm(stationList, matAdjacencia, coord_origin, coord_destination, typePreference, timeTransfers, timeStations)
+    return t
