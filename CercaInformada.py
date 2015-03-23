@@ -137,6 +137,7 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
         
     print("L'estacio mes proxima al origen es ", closestStationOrigin.name)
     print("L'estacio mes proxima al desti es ", closestStationDestination.name)
+    typePreference = int(typePreference)
 
 
 ##    if typePreference == 2:
@@ -148,6 +149,8 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
     currentNode = (None, None)
     num_expanded_nodes = 0
     visitedNodes =[]
+
+    
 
     while List and currentNode[0] != closestStationDestination.id:          #Mentres la llista no estigui buida o el primer node del primer camí(path) no sigui el destí, seguim expandint
         num_expanded_nodes = num_expanded_nodes + 1
