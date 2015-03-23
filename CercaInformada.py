@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: latin-1 -*-
+
 # Aquest fitxer conte tot el que es necessari per a la cerca A*:
 #   - Definicio de la classe Node, corresponent a la definicio dels nodes de l'arbre
 #	- Definicio de la cerca A*
@@ -5,8 +8,8 @@
 #   - Eliminar Camins Redundants
 #   - Eliminar Cicles
 # 
-# Autors: 
-# Grup: 
+# Autors: Sergi Garcia Bordils, Daniel Sanchez Gil, Adrian Soria Bonilla
+# Grup: DX13.01
 # _________________________________________________________________________________________
 # Intel.ligencia Artificial 
 # Grau en Enginyeria Informatica
@@ -18,8 +21,6 @@ from MapaMetro import *
 import math
 
 
-
- 
 
 def RemoveCycles(childrenList):
     nodes = []
@@ -33,9 +34,6 @@ def RemoveCycles(childrenList):
     return True
 
 
-
-def RemoveRedundantPaths(childrenList, nodeList, partialCostTable):
-    pass
 
 def FindClosest(coords,stationList):
 
@@ -139,7 +137,7 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
         
     print("L'estacio mes proxima al origen es ", closestStationOrigin.name)
     print("L'estacio mes proxima al desti es ", closestStationDestination.name)
-    
+
 
     if typePreference == 2:
         setNextStations(stationList, timeStations)    #matriu de costos en temps
@@ -148,9 +146,11 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
     List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
     currentNode = (None, None)
+    num_expanded_nodes = 0
+    visitedNodes =[]
 
     while List and currentNode[0] != closestStationDestination.id:          #Mentres la llista no estigui buida o el primer node del primer camí(path) no sigui el destí, seguim expandint
-        
+        num_expanded_nodes = num_expanded_nodes + 1
         path = List.pop(0)                                                  ##### "path" es la llista on estan les tuples amb les IDs i els costos
         currentNode = path[0]                                               ### ID del node on estem ara
         destinationDic = stationList[currentNode[0]-1].destinationDic       #copiem el diccionari de nodes adjacents al node actual (ID y cost) (es troba a la llista d'estacions)
@@ -160,11 +160,15 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
             nextStation = stationList[node-1]                               #Assignem a nextStation i currentStation les estacions corresponents (de la llista stationList) al node que estem 
             currentStation = stationList[currentNode[0]-1]                  #expandint i el node actual, així podrem obtenir les distàncies entre l'un i l'altre
 
+            if currentStation.id not in visitedNodes:                       #Recollim els nodes visitats per l'output de la funció
+                visitedNodes.append(currentStation.id)
+
+
             if typePreference == 0:
                 partialCost = math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y))
                 h = DistanceHeuristic(nextStation,closestStationDestination)
                 partialCost = partialCost + h
-                
+    
             elif typePreference == 1:
                 partialCost = 1
                 h = StationHeuristic(nextStation,closestStationDestination)
@@ -236,19 +240,40 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                     break
                 i-=1
 
-            print "HEAD PATH", path
-            for node in path:
-                station = stationList[node[0]-1]
-                print station.name
 
+            distance = 0
+            time = 0
+            transfers = 0
+            walk = reversed(path)
+            stopStations = len(path)-1
+            depth = len(path)
+            min_distance_origin = math.hypot((coord_origin[0] - closestStationOrigin.x),(coord_origin[1] - closestStationOrigin.y))
+            min_distance_destination = math.hypot((coord_destination[0] - closestStationDestination.x),(coord_destination[1] - closestStationDestination.y))
+
+            prev = None
+            
+            for node in reversed(path):
+                station = stationList[node[0]-1]
+                print station.id
+                if prev != None:
+                    print station, prev, station.id, prev.id
+                    partialDist = math.hypot((prev.x - station.x),(prev.y - station.y))
+                    distance = distance + partialDist
+                    partialTime = timeStations[prev.id][station.id]
+                    if prev.line != station.line:
+                        partialTime = partialTime + timeTransfers[prev.id][station.id]
+                        transfers = transfers + 1
+                prev = station
+
+            
+            return time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination
             
                         
 
 ############################################################################################
 
-
-#if __name__ == "__main__":
-#    main()
+##if __name__ == "__main__":
+##    main()
 
 
 
@@ -259,4 +284,3 @@ def test(coord_origin, coord_destination, typePreference):    #coord_origin i co
     timeStations = readCostTable("TempsEstacions.txt")        #Matriu de costos entre estacions
     timeTransfers = readCostTable("TempsTransbordaments.txt") #Matriu de costos de transbord
     AstarAlgorithm(stationList, matAdjacencia, coord_origin, coord_destination, typePreference, timeTransfers, timeStations)
-    

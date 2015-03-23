@@ -46,8 +46,8 @@ class _Astargui:
         self.filenametimeTransfers = StringVar()
         self.filenameMetro.set("Stations.txt")
         self.filenameConnections.set("Connections.txt")
-        self.filenameTimeStations.set("TempsEstacions1.txt")
-        self.filenametimeTransfers.set("TempsTransbordaments1.txt")
+        self.filenameTimeStations.set("TempsEstacions.txt")
+        self.filenametimeTransfers.set("TempsTransbordaments.txt")
 
         #WINDOW DEFINITION
         frame = Frame(master, width=RWidth, height=RHeight)
