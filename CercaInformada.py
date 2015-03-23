@@ -149,13 +149,12 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
     List = [[(closestStationOrigin.id, 0)]]      #El primer element de la llista de camins és el primer node
     currentNode = (None, None)
-    num_expanded_nodes = 0
     visitedNodes =[]
 
     
 
     while List and currentNode[0] != closestStationDestination.id:          #Mentres la llista no estigui buida o el primer node del primer camí(path) no sigui el destí, seguim expandint
-        num_expanded_nodes = num_expanded_nodes + 1
+        
         path = List.pop(0)                                                  ##### "path" es la llista on estan les tuples amb les IDs i els costos
         currentNode = path[0]                                               ### ID del node on estem ara
         destinationDic = stationList[currentNode[0]-1].destinationDic       #copiem el diccionari de nodes adjacents al node actual (ID y cost) (es troba a la llista d'estacions)
@@ -187,8 +186,10 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                     estimatedSpeed = (math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y)))/partialCost #V=x/t: assumim que la velocitat serà constant
                     h = TimeHeuristic(nextStation,closestStationDestination,estimatedSpeed)
                 else:
+                    
                     partialCost = timeTransfers[currentStation.id][nextStation.id]
-                    h = 0
+                    h = TimeHeuristic(nextStation,closestStationDestination,estimatedSpeed)
+                    print partialCost,h
                     
                 partialCost = partialCost + h
                 
@@ -261,32 +262,33 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
             min_distance_destination = math.hypot((coord_destination[0] - closestStationDestination.x),(coord_destination[1] - closestStationDestination.y))
 
             prev = None
-
-            i = 0 ####Aixo es per imprimir el cami
-
-            for node in path:
-                station = stationList[node[0] - 1]
-                print station.name
-                i-=1
-
             
-            
-#            for node in reversed(path):
- #               station = stationList[node[0]-1]
-  #              print station.id
-   #             if prev != None:
-    #                print station, prev, station.id, prev.id
-     #               partialDist = math.hypot((prev.x - station.x),(prev.y - station.y))
-      #              distance = distance + partialDist
-       #             partialTime = timeStations[prev.id][station.id]
-        #            if prev.line != station.line:
-         #               partialTime = partialTime + timeTransfers[prev.id][station.id]
-          #              transfers = transfers + 1
-           #     prev = station
-#            print time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination
- #           
-  #          return (time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination)
-            
+            for node in reversed(path):
+                station = stationList[node[0]-1]
+                print station.name, "linea:", station.line
+                if prev != None:
+                    partialDist = math.hypot((prev.x - station.x),(prev.y - station.y))
+                    distance = distance + partialDist
+                    
+                    if prev.line != station.line:
+                        partialTime = timeTransfers[prev.id][station.id]
+                        transfers = transfers + 1
+                    else:
+                        partialTime = timeStations[prev.id][station.id]
+                    time = time + partialTime
+                prev = station
+            print "Time:",time
+            print "Distance:", distance
+            print "Transfers:", transfers
+            print "Stops:", stopStations
+##            print "Expanded nodes:", num_expanded_nodes
+            print "Number of visited nodes:",len(visitedNodes)
+##            print "Visited Nodes:"
+##            for i in visitedNodes:
+##                print stationList[i].name
+            print "Depth of solution:", depth
+            print "Distance of origin station to origin coordinates:", min_distance_origin
+            print "Distance of destination station to destinacion coordinates:", min_distance_destination            
                         
 
 ############################################################################################
