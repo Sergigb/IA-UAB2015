@@ -142,9 +142,8 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
 ##    if typePreference == 2:
     transferList = readStationInformation("Stations.txt")
-    
-    setNextStations(stationList, timeStations)   #1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    setNextStations(transferList, timeTransfers)    #matriu de costos en temps
+    stationList = setNextStations(stationList, timeStations)   
+    transferList = setNextStations(transferList, timeTransfers)    #matriu de costos en temps
 ##    else:
 ##        setNextStations (stationList, connections)    #la resta de casos usen la matriu d'adjacència
 
@@ -183,13 +182,21 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
                 partialCost = partialCost + h
                 
             elif typePreference == 2:
-                partialCost = timeStations[currentStation.id][nextStation.id]
+                if currentStation.line == nextStation.line:
+                    partialCost = timeStations[currentStation.id][nextStation.id]
+                else:
+                    partialCost = timeTransfers[currentStation.id][nextStation.id]
+                
                 estimatedSpeed = (math.hypot((nextStation.x - currentStation.x),(nextStation.y - currentStation.y)))/partialCost #V=x/t: assumim que la velocitat serà constant
 
                 if currentStation.line != nextStation.line:
                     partialCost = partialCost + timeTransfers[currentStation.id][nextStation.id]
+
+                if currentStation.line == nextStation.line:
+                    h = TimeHeuristic(nextStation,closestStationDestination,estimatedSpeed)
+                else:
+                    h=0
                     
-                h = TimeHeuristic(nextStation,closestStationDestination,estimatedSpeed)
                 partialCost = partialCost + h
                 
             elif typePreference == 3:
@@ -262,7 +269,7 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
 
             prev = None
 
-            i = 0
+            i = 0 ####Aixo es per imprimir el cami
 
             for node in path:
                 station = stationList[node[0] - 1]
@@ -281,11 +288,11 @@ def AstarAlgorithm(stationList, connections, coord_origin, coord_destination, ty
        #             partialTime = timeStations[prev.id][station.id]
         #            if prev.line != station.line:
          #               partialTime = partialTime + timeTransfers[prev.id][station.id]
-#                        transfers = transfers + 1
- #               prev = station
-  #          print time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination
-   #         
-    #        return (time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination)
+          #              transfers = transfers + 1
+           #     prev = station
+#            print time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination
+ #           
+  #          return (time,distance,transfers,stopStations,num_expanded_nodes,depth,visitedNodes,min_distance_origin,min_distance_destination)
             
                         
 
